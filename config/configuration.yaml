@@ -1,0 +1,12 @@
+# Minimal Home Assistant config for local integration development.
+# Prefer explicit domains over default_config so we skip hardware-oriented
+# defaults, while still loading recorder/history for entity graphs.
+frontend:
+
+recorder:
+history:
+
+logger:
+  default: info
+  logs:
+    custom_components.plum_ecovent: debug

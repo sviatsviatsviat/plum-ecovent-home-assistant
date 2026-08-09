@@ -1,0 +1,14 @@
+---
+description: Conventional commit message format
+alwaysApply: true
+---
+
+# Conventional commits
+
+Use [.cursor/skills/conventional-commits/SKILL.md](../skills/conventional-commits/SKILL.md) when drafting commit messages.
+
+Prefixes: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`
+
+Optional scope: `feat(plum_ecovent):`, `feat(config_flow):`, `test(sensor):`
+
+Subject: imperative mood, concise. Body: explain *why*, not only *what*.

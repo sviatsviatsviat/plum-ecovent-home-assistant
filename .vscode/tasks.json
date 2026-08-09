@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Home Assistant: Run",
+      "type": "shell",
+      "command": "/home/vscode/.venv/bin/python -m homeassistant -c config",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Tests",
+      "type": "shell",
+      "command": "/home/vscode/.venv/bin/python -m pytest",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "/home/vscode/.venv/bin/python -m ruff check .",
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

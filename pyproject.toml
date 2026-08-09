@@ -1,0 +1,18 @@
+[project]
+name = "plum-ecovent-home-assistant"
+version = "1.0.0"
+description = "Plum ecoVENT custom integration for Home Assistant"
+readme = "README.md"
+requires-python = ">=3.14.2"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["ASYNC", "E4", "E7", "E9", "F", "I", "UP"]

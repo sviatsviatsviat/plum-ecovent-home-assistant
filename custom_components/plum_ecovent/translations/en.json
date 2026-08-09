@@ -1,0 +1,240 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Plum ecoVENT",
+        "description": "Enter the local ecoNET300 module address and credentials (not your econet24 cloud account). Enable insecure HTTP only for a host-only or http:// address.",
+        "data": {
+          "host": "Host or IP address",
+          "username": "Username",
+          "password": "Password",
+          "allow_insecure_http": "Allow insecure HTTP"
+        },
+        "data_description": {
+          "allow_insecure_http": "Warning: Enabling this sends your username and password over cleartext HTTP on the local network. Use only on a trusted LAN or VPN."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate Plum ecoVENT",
+        "description": "Enter the updated local credentials for this ecoNET module.",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to the ecoNET module. Check the host and that it is reachable on the LAN.",
+      "invalid_auth": "Invalid username or password.",
+      "insecure_http_required": "Cleartext HTTP requires enabling Allow insecure HTTP (or provide an https:// URL).",
+      "unknown": "Unexpected error communicating with the ecoNET module."
+    },
+    "abort": {
+      "already_configured": "This ecoNET module is already configured.",
+      "single_instance_allowed": "Only one Plum ecoVENT entry is allowed.",
+      "reauth_successful": "Reauthentication was successful.",
+      "wrong_device": "The credentials belong to a different ecoNET module."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "supply_fan_speed": {
+        "name": "Supply fan speed"
+      },
+      "exhaust_fan_speed": {
+        "name": "Exhaust fan speed"
+      },
+      "supply_air_temperature": {
+        "name": "Supply air temperature"
+      },
+      "intake_air_temperature": {
+        "name": "Intake air temperature"
+      },
+      "extracted_air_temperature": {
+        "name": "Extracted air temperature"
+      },
+      "exhaust_air_temperature": {
+        "name": "Exhaust air temperature"
+      },
+      "supply_air_filter_depletion": {
+        "name": "Supply air filter depletion"
+      },
+      "extracted_air_filter_depletion": {
+        "name": "Extracted air filter depletion"
+      },
+      "supply_air_filter_operation_days": {
+        "name": "Supply air filter operation days"
+      },
+      "extracted_air_filter_operation_days": {
+        "name": "Extracted air filter operation days"
+      },
+      "supply_air_filter_days_to_alert": {
+        "name": "Supply air filter days to alert"
+      },
+      "extracted_air_filter_days_to_alert": {
+        "name": "Extracted air filter days to alert"
+      },
+      "current_comfort_temperature": {
+        "name": "Current comfort temperature"
+      },
+      "current_leading_temperature": {
+        "name": "Current leading temperature"
+      },
+      "external_temperature": {
+        "name": "External temperature"
+      },
+      "control_mode": {
+        "name": "Control mode",
+        "state": {
+          "heating": "Heating",
+          "cooling": "Cooling",
+          "unsupported": "Unsupported"
+        }
+      },
+      "summer_winter_status": {
+        "name": "Summer / Winter",
+        "state": {
+          "summer": "Summer",
+          "winter": "Winter",
+          "auto_summer": "Auto — Summer",
+          "auto_winter": "Auto — Winter",
+          "ventilation": "Ventilation",
+          "unsupported": "Unsupported"
+        }
+      },
+      "wifi_signal": {
+        "name": "Wi-Fi signal"
+      },
+      "wifi_quality": {
+        "name": "Wi-Fi quality"
+      },
+      "party_remaining_time": {
+        "name": "Party remaining time"
+      },
+      "outside_remaining_time": {
+        "name": "Outside remaining time"
+      },
+      "airing_remaining_time": {
+        "name": "Airing remaining time"
+      },
+      "bypass_motor_state": {
+        "name": "Bypass motor state",
+        "state": {
+          "off": "Off",
+          "on": "On",
+          "unsupported": "Unsupported"
+        }
+      },
+      "bypass_open_level": {
+        "name": "Bypass open level"
+      }
+    },
+    "select": {
+      "operation_mode": {
+        "name": "Recuperation operation mode",
+        "state": {
+          "halt": "Halt",
+          "mode_1": "Mode 1",
+          "mode_2": "Mode 2",
+          "mode_3": "Mode 3",
+          "mode_4": "Mode 4",
+          "unsupported": "Unsupported"
+        }
+      },
+      "additional_work_mode": {
+        "name": "Additional work mode",
+        "state": {
+          "off": "Off",
+          "outside": "Outside",
+          "party": "Party",
+          "airing": "Airing",
+          "unsupported": "Unsupported"
+        }
+      },
+      "summer_winter_mode": {
+        "name": "Summer / winter mode",
+        "state": {
+          "summer": "Summer",
+          "winter": "Winter",
+          "auto": "Auto",
+          "ventilation": "Ventilation",
+          "unsupported": "Unsupported"
+        }
+      },
+      "bypass_mode": {
+        "name": "Bypass mode",
+        "state": {
+          "auto": "Auto",
+          "open": "Open",
+          "close": "Close",
+          "unsupported": "Unsupported"
+        }
+      }
+    },
+    "number": {
+      "winter_active_temperature": {
+        "name": "Winter mode turn-on temperature"
+      },
+      "summer_mode_hysteresis": {
+        "name": "Summer mode hysteresis"
+      },
+      "user_mode_1_supply_fan_speed": {
+        "name": "Mode 1 supply fan speed"
+      },
+      "user_mode_1_exhaust_fan_speed": {
+        "name": "Mode 1 exhaust fan speed"
+      },
+      "user_mode_1_preset_temperature": {
+        "name": "Mode 1 target temperature"
+      },
+      "user_mode_2_supply_fan_speed": {
+        "name": "Mode 2 supply fan speed"
+      },
+      "user_mode_2_exhaust_fan_speed": {
+        "name": "Mode 2 exhaust fan speed"
+      },
+      "user_mode_2_preset_temperature": {
+        "name": "Mode 2 target temperature"
+      },
+      "user_mode_3_supply_fan_speed": {
+        "name": "Mode 3 supply fan speed"
+      },
+      "user_mode_3_exhaust_fan_speed": {
+        "name": "Mode 3 exhaust fan speed"
+      },
+      "user_mode_3_preset_temperature": {
+        "name": "Mode 3 target temperature"
+      },
+      "user_mode_4_supply_fan_speed": {
+        "name": "Mode 4 supply fan speed"
+      },
+      "user_mode_4_exhaust_fan_speed": {
+        "name": "Mode 4 exhaust fan speed"
+      },
+      "user_mode_4_preset_temperature": {
+        "name": "Mode 4 target temperature"
+      },
+      "party_supply_fan_speed": {
+        "name": "Party supply fan speed"
+      },
+      "party_exhaust_fan_speed": {
+        "name": "Party exhaust fan speed"
+      },
+      "party_duration": {
+        "name": "Party duration"
+      },
+      "party_preset_temperature": {
+        "name": "Party target temperature"
+      },
+      "outside_duration": {
+        "name": "Outside duration"
+      },
+      "airing_exhaust_fan_speed": {
+        "name": "Airing exhaust fan speed"
+      },
+      "airing_duration": {
+        "name": "Airing duration"
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.coverage
+.pytest_cache/
+.ruff_cache/
+.venv/
+htmlcov/
+
+# Cursor hook runtime state (if hooks are added later)
+/.cursor/hooks/state/

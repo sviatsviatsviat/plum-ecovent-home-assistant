@@ -1,0 +1,34 @@
+{
+  "name": "Plum ecoVENT Home Assistant",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "forwardPorts": [8123],
+  "portsAttributes": {
+    "8123": {
+      "label": "Home Assistant",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "python -m venv /home/vscode/.venv && /home/vscode/.venv/bin/python -m pip install -r requirements-dev.txt && mkdir -p config && ln -sfnT ../custom_components config/custom_components",
+  "containerEnv": {
+    "GIT_CONFIG_COUNT": "1",
+    "GIT_CONFIG_KEY_0": "safe.directory",
+    "GIT_CONFIG_VALUE_0": "/workspaces/plum-ecovent-home-assistant"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1.1.0": {
+      "version": "2.96.0"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}

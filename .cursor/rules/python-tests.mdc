@@ -1,0 +1,15 @@
+---
+description: Pytest conventions for the Plum ecoVENT integration
+globs: tests/**/*.py
+alwaysApply: false
+---
+
+# Python tests
+
+Follow [.cursor/skills/python-tests/SKILL.md](../skills/python-tests/SKILL.md) for full conventions.
+
+- Assert real Home Assistant behavior; no empty or tautological tests.
+- Use `pytest-homeassistant-custom-component` helpers (`MockConfigEntry`, etc.).
+- Keep `enable_custom_integrations` enabled via the shared autouse fixture.
+- Prefer async tests that set up a config entry and assert entity/state outcomes.
+- Patch network I/O at boundaries when device communication is added; do not hit real ecoNET hardware in unit tests.

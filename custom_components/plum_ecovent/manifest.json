@@ -1,0 +1,13 @@
+{
+  "domain": "plum_ecovent",
+  "name": "Plum ecoVENT",
+  "codeowners": ["@sviatsviatsviat"],
+  "config_flow": true,
+  "documentation": "https://github.com/sviatsviatsviat/plum-ecovent-home-assistant",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/sviatsviatsviat/plum-ecovent-home-assistant/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "1.0.0"
+}

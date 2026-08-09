@@ -1,0 +1,40 @@
+name: Validate
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  hassfest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Hassfest
+        # home-assistant/actions does not publish usable version tags for
+        # hassfest; pin the full commit SHA (master as of 2026-08-03).
+        uses: home-assistant/actions/hassfest@a7c616ce81ccda50150bf1595786c71b1883fabb
+
+  hacs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: HACS validation
+        # hacs/action tags are N.N.N without a v prefix.
+        uses: hacs/action@22.5.0
+        with:
+          category: integration

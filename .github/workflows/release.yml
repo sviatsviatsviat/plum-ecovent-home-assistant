@@ -1,0 +1,92 @@
+name: Release
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Require tag on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git fetch --no-tags "$remote" \
+            "+refs/heads/main:refs/remotes/origin/main" \
+            "+refs/tags/${tag}:refs/tags/${tag}"
+          remote_sha="$(git rev-parse "refs/tags/${tag}^{}")"
+          if [[ "$remote_sha" != "$GITHUB_SHA" ]]; then
+            echo "refusing to release ${tag}: remote tag commit ${remote_sha} != GITHUB_SHA ${GITHUB_SHA}" >&2
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor "$remote_sha" origin/main; then
+            echo "refusing to release ${tag}: commit is not on origin/main" >&2
+            git rev-parse --short "$remote_sha" origin/main >&2
+            exit 1
+          fi
+
+      - name: Setup Python
+        uses: actions/setup-python@v7.0.0
+        with:
+          python-version: "3.14.2"
+
+      - name: Require matching package versions
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          expected="${tag#v}"
+          manifest_version="$(python -c 'import json; print(json.load(open("custom_components/plum_ecovent/manifest.json"))["version"])')"
+          pyproject_version="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+          if [[ "$manifest_version" != "$expected" ]]; then
+            echo "manifest.json version ${manifest_version} does not match tag ${tag} (expected ${expected})" >&2
+            exit 1
+          fi
+          if [[ "$pyproject_version" != "$expected" ]]; then
+            echo "pyproject.toml version ${pyproject_version} does not match tag ${tag} (expected ${expected})" >&2
+            exit 1
+          fi
+
+      - name: Extract release notes
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          mkdir -p dist
+          bash .github/scripts/changelog-section.sh "$tag" CHANGELOG.md > dist/notes.md
+          if ! grep -q '[^[:space:]]' dist/notes.md; then
+            echo "empty changelog section for ${tag}" >&2
+            exit 1
+          fi
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          prerelease_args=()
+          if [[ "$tag" == *-* ]]; then
+            prerelease_args+=(--prerelease)
+          fi
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release edit "$tag" --verify-tag --notes-file dist/notes.md "${prerelease_args[@]}"
+          else
+            gh release create "$tag" \
+              --verify-tag \
+              --title "$tag" \
+              --notes-file dist/notes.md \
+              "${prerelease_args[@]}"
+          fi
