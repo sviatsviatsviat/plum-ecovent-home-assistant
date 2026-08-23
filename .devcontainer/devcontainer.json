@@ -17,7 +17,7 @@
     "GIT_CONFIG_VALUE_0": "/workspaces/plum-ecovent-home-assistant"
   },
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1.1.0": {
+    "ghcr.io/devcontainers/features/github-cli:1.1.1": {
       "version": "2.96.0"
     }
   },
