@@ -1,4 +1,4 @@
 debugpy==1.8.21
-homeassistant==2026.8.0
-pytest-homeassistant-custom-component==0.13.354
+homeassistant==2026.8.3
+pytest-homeassistant-custom-component==0.13.357
 ruff==0.16.5
