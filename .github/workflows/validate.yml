@@ -23,7 +23,7 @@ jobs:
       - name: Hassfest
         # home-assistant/actions does not publish usable version tags for
         # hassfest; pin the full commit SHA (master as of 2026-08-03).
-        uses: home-assistant/actions/hassfest@a7c616ce81ccda50150bf1595786c71b1883fabb
+        uses: home-assistant/actions/hassfest@06749dd8c0b54f350bc69c8752456cee498808a3
 
   hacs:
     runs-on: ubuntu-latest
