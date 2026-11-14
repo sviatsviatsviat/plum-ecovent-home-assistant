@@ -18,7 +18,11 @@ from ..models.additional_work_presets import (
     resolve_additional_work_mode_number,
 )
 from ..models.bypass import BypassModeStatus, resolve_bypass_mode
-from ..models.filter import FilterStatus, resolve_filter_status
+from ..models.filter import (
+    FilterStatus,
+    resolve_filter_status,
+    resolve_filter_time_to_alarm,
+)
 from ..models.operation import OperationModeStatus, resolve_operation_mode
 from ..models.summer_winter import (
     SummerWinterModeStatus,
@@ -45,6 +49,7 @@ class PlumEconetData:
     edit_params: dict[str, Any]
     edit_param_index: EditParamIndex
     filter_status: FilterStatus
+    filter_time_to_alarm: EditableNumberStatus
     work_status: WorkStatus
     operation_mode: OperationModeStatus
     additional_work_mode: AdditionalWorkModeStatus
@@ -98,6 +103,9 @@ def build_snapshot(
         edit_params=edit_params,
         edit_param_index=data_index,
         filter_status=resolve_filter_status(edit_params, data_index),
+        filter_time_to_alarm=resolve_filter_time_to_alarm(
+            edit_params, reg_params, data_index
+        ),
         work_status=resolve_work_status(edit_params),
         operation_mode=resolve_operation_mode(reg_params, edit_params, data_index),
         additional_work_mode=resolve_additional_work_mode(

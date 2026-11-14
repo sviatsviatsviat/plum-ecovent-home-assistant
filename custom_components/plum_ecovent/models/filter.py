@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from typing import Any
 
 from ..const import (
+    FILTER_TIME_TO_ALARM_MAX,
+    FILTER_TIME_TO_ALARM_MIN,
     INFO_SLOT_EXTRACT_FILTER_DAYS,
     INFO_SLOT_EXTRACT_FILTER_DEPLETION,
     INFO_SLOT_SUPPLY_FILTER_DAYS,
@@ -14,8 +16,14 @@ from ..const import (
     INFO_UNIT_DAYS,
     INFO_UNIT_PERCENT,
     PARAM_FILTER_TIME_TO_ALARM,
+    PARAM_FILTER_TIME_TO_ALARM_ID,
 )
-from ..parameters import EditParamIndex, find_data_entry_by_name
+from ..parameters import (
+    EditableNumberStatus,
+    EditParamIndex,
+    find_data_entry_by_name,
+    resolve_writable_data_number,
+)
 
 # Absolute percent-point tolerance for depletion ≈ days / timeToAlarm × 100.
 _DEPL_ABS_TOL = 0.05
@@ -183,4 +191,21 @@ def resolve_filter_status(
         extract_days=extract_days,
         supply_days_to_alert=_days_to_alert(supply_days, time_to_alarm),
         extract_days_to_alert=_days_to_alert(extract_days, time_to_alarm),
+    )
+
+
+def resolve_filter_time_to_alarm(
+    edit_params: dict[str, Any],
+    reg_params: dict[str, Any] | None = None,
+    data_index: EditParamIndex | None = None,
+) -> EditableNumberStatus:
+    """Validate FILTERtimeToAlarm identity and return value/min/max (days)."""
+    return resolve_writable_data_number(
+        edit_params,
+        name=PARAM_FILTER_TIME_TO_ALARM,
+        expected_id=PARAM_FILTER_TIME_TO_ALARM_ID,
+        reg_params=reg_params,
+        fallback_min=FILTER_TIME_TO_ALARM_MIN,
+        fallback_max=FILTER_TIME_TO_ALARM_MAX,
+        data_index=data_index,
     )

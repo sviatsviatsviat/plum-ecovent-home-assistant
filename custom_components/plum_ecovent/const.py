@@ -32,6 +32,10 @@ PARAM_EXHAUST_AIR_TEMP = "REKcuExhTemp"
 
 # Filter lifetime setpoint in editParams.data (by name, not numeric id).
 PARAM_FILTER_TIME_TO_ALARM = "FILTERtimeToAlarm"
+PARAM_FILTER_TIME_TO_ALARM_ID = 574
+# Documented FILTERtimeToAlarm range (days) when the module omits minv/maxv.
+FILTER_TIME_TO_ALARM_MIN = 1.0
+FILTER_TIME_TO_ALARM_MAX = 1500.0
 
 # Fixed informationParams slot ids for ecoVENT filter status.
 INFO_SLOT_SUPPLY_FILTER_DEPLETION = "61"

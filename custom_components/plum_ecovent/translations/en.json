@@ -172,6 +172,9 @@
       }
     },
     "number": {
+      "filter_time_to_alarm": {
+        "name": "Filter replacement interval"
+      },
       "winter_active_temperature": {
         "name": "Winter mode turn-on temperature"
       },
