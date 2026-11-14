@@ -65,7 +65,9 @@ async def test_setup_creates_device_and_unloads(
     assert hass.states.get("sensor.plum_ecovent_stub_status") is None
 
     device_registry = dr.async_get(hass)
-    device = device_registry.async_get_device(identifiers={(DOMAIN, TEST_UID)})
+    device = device_registry.async_get_device_by_identifier(
+        (DOMAIN, TEST_UID), entry.entry_id
+    )
     assert device is not None
     assert device.manufacturer == "Plum"
     assert device.model == "ecoVENT"
@@ -188,7 +190,9 @@ async def test_setup_defaults_model_to_ecovent(
         await hass.async_block_till_done()
 
     device_registry = dr.async_get(hass)
-    device = device_registry.async_get_device(identifiers={(DOMAIN, TEST_UID)})
+    device = device_registry.async_get_device_by_identifier(
+        (DOMAIN, TEST_UID), entry.entry_id
+    )
     assert device is not None
     assert device.model == "ecoVENT"
 
