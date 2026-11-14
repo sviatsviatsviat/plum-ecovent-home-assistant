@@ -57,7 +57,7 @@ def _filter_time_to_alarm(
     _, entry = resolved
     try:
         value = float(entry.get("value"))
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None
     if not math.isfinite(value) or value <= 0:
         return None
@@ -76,7 +76,7 @@ def _parse_info_slot(entry: Any) -> tuple[float, int] | None:
         return None
     try:
         value = float(row[0])
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         return None
     if not math.isfinite(value):
         return None

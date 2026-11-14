@@ -24,7 +24,7 @@ def build_data_index(
             continue
         try:
             param_id = int(key)
-        except (TypeError, ValueError):
+        except TypeError, ValueError:
             continue
         index[name] = (param_id, entry)
     return index
@@ -80,5 +80,5 @@ def _matches_expected_param_id(raw: Any, expected_id: int) -> bool:
         return False
     try:
         return int(raw) == expected_id
-    except (TypeError, ValueError, OverflowError):
+    except TypeError, ValueError, OverflowError:
         return False

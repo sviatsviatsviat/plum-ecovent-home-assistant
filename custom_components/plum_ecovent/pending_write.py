@@ -101,9 +101,7 @@ class PlumEconetPendingWriteMixin:
                     name=f"{getattr(self, 'entity_id', 'plum_ecovent')} pending refresh",
                 )
 
-        self._expiry_unsub = async_call_later(
-            hass, PENDING_WRITE_TIMEOUT, _expired
-        )
+        self._expiry_unsub = async_call_later(hass, PENDING_WRITE_TIMEOUT, _expired)
 
     def effective_value(self, device_value: Any) -> Any:
         """Return pending while active, else the device value."""

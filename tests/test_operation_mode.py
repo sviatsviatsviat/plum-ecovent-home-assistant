@@ -210,9 +210,7 @@ async def test_operation_mode_write_uses_numeric_id(
     )
     await hass.async_block_till_done()
 
-    mock_api.async_set_param.assert_awaited_once_with(
-        "17", OperationMode.MODE_1.value
-    )
+    mock_api.async_set_param.assert_awaited_once_with("17", OperationMode.MODE_1.value)
     assert hass.states.get(OPERATION_MODE).state == OperationMode.MODE_1.option
 
 

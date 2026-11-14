@@ -74,11 +74,7 @@ class PlumEconetEditableNumber(
     async def async_set_native_value(self, value: float) -> None:
         """Write a numeric setpoint via newParam after identity and range checks."""
         status = self._status
-        if (
-            not status.valid
-            or status.min_value is None
-            or status.max_value is None
-        ):
+        if not status.valid or status.min_value is None or status.max_value is None:
             raise HomeAssistantError(
                 f"{self._label} is unavailable; "
                 f"{self._param_name} identity check failed"

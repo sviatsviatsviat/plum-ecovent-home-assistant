@@ -135,8 +135,7 @@ def test_mapped_wire_does_not_log(
     assert not [
         record
         for record in caplog.records
-        if record.levelno == logging.WARNING
-        and "Unsupported" in record.getMessage()
+        if record.levelno == logging.WARNING and "Unsupported" in record.getMessage()
     ]
 
 
@@ -207,6 +206,5 @@ def test_edit_param_mapped_wire_does_not_log(
     assert not [
         record
         for record in caplog.records
-        if record.levelno == logging.WARNING
-        and "Unsupported" in record.getMessage()
+        if record.levelno == logging.WARNING and "Unsupported" in record.getMessage()
     ]

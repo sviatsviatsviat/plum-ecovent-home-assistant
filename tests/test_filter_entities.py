@@ -220,7 +220,9 @@ async def test_filter_sensors_report_validated_slot_values(
     assert hass.states.get(EXTRACT_DAYS).state == "111.0"
     assert hass.states.get(SUPPLY_DAYS_TO_ALERT).state == "69.0"
     assert hass.states.get(EXTRACT_DAYS_TO_ALERT).state == "69.0"
-    assert hass.states.get(SUPPLY_DEPL).attributes[ATTR_UNIT_OF_MEASUREMENT] == PERCENTAGE
+    assert (
+        hass.states.get(SUPPLY_DEPL).attributes[ATTR_UNIT_OF_MEASUREMENT] == PERCENTAGE
+    )
     assert (
         hass.states.get(SUPPLY_DAYS).attributes[ATTR_UNIT_OF_MEASUREMENT]
         == UnitOfTime.DAYS

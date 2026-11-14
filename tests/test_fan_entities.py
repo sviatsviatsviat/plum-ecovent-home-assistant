@@ -80,9 +80,7 @@ async def test_fan_speed_sensor_unique_ids(
     await setup_integration(hass, mock_api)
 
     registry = er.async_get(hass)
-    assert (
-        registry.async_get(SUPPLY_SPEED).unique_id == f"{TEST_UID}_supply_fan_speed"
-    )
+    assert registry.async_get(SUPPLY_SPEED).unique_id == f"{TEST_UID}_supply_fan_speed"
     assert (
         registry.async_get(EXHAUST_SPEED).unique_id == f"{TEST_UID}_exhaust_fan_speed"
     )

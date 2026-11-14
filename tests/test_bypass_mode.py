@@ -205,9 +205,7 @@ async def test_bypass_mode_write_uses_numeric_id(
     )
     await hass.async_block_till_done()
 
-    mock_api.async_set_param.assert_awaited_once_with(
-        "342", BypassMode.OPEN.value
-    )
+    mock_api.async_set_param.assert_awaited_once_with("342", BypassMode.OPEN.value)
     assert hass.states.get(BYPASS_MODE).state == BypassMode.OPEN.option
 
 
@@ -312,7 +310,9 @@ async def test_bypass_companion_sensors(
     assert open_level.attributes["icon"] == "mdi:valve-closed"
 
     registry = er.async_get(hass)
-    assert registry.async_get(BYPASS_MOTOR).unique_id == f"{TEST_UID}_bypass_motor_state"
+    assert (
+        registry.async_get(BYPASS_MOTOR).unique_id == f"{TEST_UID}_bypass_motor_state"
+    )
     assert registry.async_get(BYPASS_OPEN).unique_id == f"{TEST_UID}_bypass_open_level"
 
     mock_api.async_get_reg_params.return_value = {
