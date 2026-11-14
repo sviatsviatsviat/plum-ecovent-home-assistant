@@ -1,6 +1,6 @@
 [project]
 name = "plum-ecovent-home-assistant"
-version = "1.0.0"
+version = "1.1.0"
 description = "Plum ecoVENT custom integration for Home Assistant"
 readme = "README.md"
 requires-python = ">=3.14.2"
