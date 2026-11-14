@@ -9,6 +9,7 @@ from .. import PlumEconetConfigEntry
 from ..models.additional_work_presets import ADDITIONAL_WORK_MODE_NUMBERS
 from ..models.user_mode import USER_MODE_NUMBERS
 from .additional_work_mode import PlumEconetAdditionalWorkModeNumber
+from .filter import PlumEconetFilterTimeToAlarmNumber
 from .summer_winter import (
     PlumEconetSummerHysteresisNumber,
     PlumEconetWinterActiveTempNumber,
@@ -27,6 +28,7 @@ async def async_setup_entry(
         [
             PlumEconetSummerHysteresisNumber(coordinator),
             PlumEconetWinterActiveTempNumber(coordinator),
+            PlumEconetFilterTimeToAlarmNumber(coordinator),
             *(
                 PlumEconetAdditionalWorkModeNumber(coordinator, spec)
                 for spec in ADDITIONAL_WORK_MODE_NUMBERS

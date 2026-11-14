@@ -154,7 +154,9 @@ Read-only slots (not `data` ids). Shape: `[visible, [[value, unitIndex, …]]]`.
 | `63` | Supply filter operation days | `13` |
 | `64` | Extract filter operation days | `13` |
 
-Cross-check against named `FILTERtimeToAlarm` in `data` (id `574` here; `edit: true`, `minv`/`maxv` `1`/`1500`). Depletion ≈ `days / FILTERtimeToAlarm × 100`. The integration exposes diagnostic **days to alert** sensors as remaining days until that threshold (`FILTERtimeToAlarm − operation days`, floored at `0`); it does not expose the raw threshold as a writable setting.
+Cross-check against named `FILTERtimeToAlarm` in `data` (id `574` here; `edit: true`, `minv`/`maxv` `1`/`1500`). Depletion ≈ `days / FILTERtimeToAlarm × 100`. The integration exposes diagnostic **days to alert** sensors as remaining days until that threshold (`FILTERtimeToAlarm − operation days`, floored at `0`).
+
+`FILTERtimeToAlarm` is the filter replacement interval in days, shared by both filters. Present only in `editParams.data` (not in `regParams.curr`). `mult` `1`. Write: `/econet/newParam?newParamName=574`; confirm via `data["574"].value`. Depletion and days-to-alert recompute against the new threshold on the next `editParams` read.
 
 ### 3.4 `REKWS1` — operation mode (id 17)
 

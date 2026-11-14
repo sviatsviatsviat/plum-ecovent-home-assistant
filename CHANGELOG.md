@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The
 
 ## [Unreleased]
 
+### Added
+
+- Filter replacement interval (days) configuration number, so the filter alert threshold (`FILTERtimeToAlarm`) can be changed from Home Assistant, for example from 180 to 365 days.
+
 ### Fixed
 
 - Summer/winter mode shows Auto instead of Unsupported when the module has switched Auto to winter recuperation; selecting Auto still sets plain Auto.

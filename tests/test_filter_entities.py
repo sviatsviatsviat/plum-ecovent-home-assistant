@@ -1,22 +1,30 @@
-"""Tests for Plum ecoVENT filter depletion and operation-days sensors."""
+"""Tests for Plum ecoVENT filter sensors and replacement interval number."""
 
 from __future__ import annotations
 
 import math
 from copy import deepcopy
 from typing import Any
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
+import pytest
 from homeassistant.const import (
+    ATTR_ENTITY_ID,
     ATTR_UNIT_OF_MEASUREMENT,
     PERCENTAGE,
     STATE_UNAVAILABLE,
     EntityCategory,
     UnitOfTime,
 )
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.entity_platform import async_get_platforms
 
-from custom_components.plum_ecovent.models.filter import resolve_filter_status
+from custom_components.plum_ecovent.exceptions import PlumEconetConnectionError
+from custom_components.plum_ecovent.models.filter import (
+    resolve_filter_status,
+    resolve_filter_time_to_alarm,
+)
 from tests.conftest import TEST_UID, setup_integration
 
 SUPPLY_DEPL = "sensor.plum_ecovent_supply_air_filter_depletion"
@@ -25,6 +33,7 @@ SUPPLY_DAYS = "sensor.plum_ecovent_supply_air_filter_operation_days"
 EXTRACT_DAYS = "sensor.plum_ecovent_extracted_air_filter_operation_days"
 SUPPLY_DAYS_TO_ALERT = "sensor.plum_ecovent_supply_air_filter_days_to_alert"
 EXTRACT_DAYS_TO_ALERT = "sensor.plum_ecovent_extracted_air_filter_days_to_alert"
+FILTER_INTERVAL = "number.plum_ecovent_filter_replacement_interval"
 
 FILTER_ENTITIES = (
     SUPPLY_DEPL,
@@ -319,3 +328,167 @@ async def test_filter_sensor_unique_ids(
     assert extract_alert.unique_id == f"{TEST_UID}_extracted_air_filter_days_to_alert"
     assert supply_alert.entity_category is EntityCategory.DIAGNOSTIC
     assert extract_alert.entity_category is EntityCategory.DIAGNOSTIC
+
+
+def test_resolve_filter_time_to_alarm_accepts_expected_identity() -> None:
+    """Test FILTERtimeToAlarm resolves value and module bounds by name and id."""
+    status = resolve_filter_time_to_alarm(_filter_edit_params())
+
+    assert status.valid
+    assert status.value == 180.0
+    assert status.min_value == 1.0
+    assert status.max_value == 1500.0
+
+
+def test_resolve_filter_time_to_alarm_rejects_id_mismatch() -> None:
+    """Test FILTERtimeToAlarm under an unexpected id is not writable."""
+    edit_params = _filter_edit_params()
+    edit_params["data"]["999"] = edit_params["data"].pop("574")
+
+    assert not resolve_filter_time_to_alarm(edit_params).valid
+
+
+def test_resolve_filter_time_to_alarm_rejects_non_editable() -> None:
+    """Test FILTERtimeToAlarm marked read-only is not writable."""
+    edit_params = _filter_edit_params()
+    edit_params["data"]["574"]["edit"] = False
+
+    assert not resolve_filter_time_to_alarm(edit_params).valid
+
+
+def test_resolve_filter_time_to_alarm_uses_fallback_bounds() -> None:
+    """Test degenerate 0/0 bounds fall back to the documented 1–1500 days."""
+    edit_params = _filter_edit_params()
+    edit_params["data"]["574"]["minv"] = 0
+    edit_params["data"]["574"]["maxv"] = 0
+
+    status = resolve_filter_time_to_alarm(edit_params)
+
+    assert status.valid
+    assert status.min_value == 1.0
+    assert status.max_value == 1500.0
+
+
+async def test_filter_interval_number_exposes_value_and_bounds(
+    hass,
+    mock_api: MagicMock,
+) -> None:
+    """Test the interval number reports days, module bounds, and box mode."""
+    mock_api.async_get_edit_params.return_value = _filter_edit_params()
+    await setup_integration(hass, mock_api)
+
+    state = hass.states.get(FILTER_INTERVAL)
+    assert state is not None
+    assert state.state == "180.0"
+    assert state.attributes["min"] == 1.0
+    assert state.attributes["max"] == 1500.0
+    assert state.attributes["step"] == 1.0
+    assert state.attributes["mode"] == "box"
+    assert state.attributes[ATTR_UNIT_OF_MEASUREMENT] == UnitOfTime.DAYS
+
+    entry = er.async_get(hass).async_get(FILTER_INTERVAL)
+    assert entry is not None
+    assert entry.unique_id == f"{TEST_UID}_filter_time_to_alarm"
+    assert entry.entity_category is EntityCategory.CONFIG
+
+
+async def test_filter_interval_write_uses_numeric_id(
+    hass,
+    mock_api: MagicMock,
+) -> None:
+    """Test setting the interval writes newParamName=574 and updates sensors."""
+    mock_api.async_get_edit_params.return_value = _filter_edit_params()
+    await setup_integration(hass, mock_api)
+
+    refreshed = _filter_edit_params()
+    refreshed["data"]["574"]["value"] = 365
+    refreshed["informationParams"]["61"] = [True, [[30.41, 2, 0]]]
+    refreshed["informationParams"]["62"] = [True, [[30.41, 2, 0]]]
+    mock_api.async_get_edit_params.return_value = refreshed
+
+    await hass.services.async_call(
+        "number",
+        "set_value",
+        {ATTR_ENTITY_ID: FILTER_INTERVAL, "value": 365},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+
+    mock_api.async_set_param.assert_awaited_once_with("574", 365)
+    assert hass.states.get(FILTER_INTERVAL).state == "365.0"
+    assert hass.states.get(SUPPLY_DAYS_TO_ALERT).state == "254.0"
+    assert hass.states.get(EXTRACT_DAYS_TO_ALERT).state == "254.0"
+
+
+async def test_filter_interval_unavailable_without_param(
+    hass,
+    mock_api: MagicMock,
+) -> None:
+    """Test the interval number is unavailable when FILTERtimeToAlarm is absent."""
+    await setup_integration(hass, mock_api)
+
+    assert hass.states.get(FILTER_INTERVAL).state == STATE_UNAVAILABLE
+
+    await hass.services.async_call(
+        "number",
+        "set_value",
+        {ATTR_ENTITY_ID: FILTER_INTERVAL, "value": 365},
+        blocking=True,
+    )
+    mock_api.async_set_param.assert_not_awaited()
+
+
+async def test_filter_interval_unavailable_on_id_mismatch(
+    hass,
+    mock_api: MagicMock,
+) -> None:
+    """Test an unexpected FILTERtimeToAlarm id marks the number unavailable."""
+    edit_params = _filter_edit_params()
+    edit_params["data"]["999"] = edit_params["data"].pop("574")
+    mock_api.async_get_edit_params.return_value = edit_params
+    await setup_integration(hass, mock_api)
+
+    assert hass.states.get(FILTER_INTERVAL).state == STATE_UNAVAILABLE
+
+
+async def test_filter_interval_write_rejects_out_of_range(
+    hass,
+    mock_api: MagicMock,
+) -> None:
+    """Test values outside minv/maxv are rejected before writing."""
+    mock_api.async_get_edit_params.return_value = _filter_edit_params()
+    await setup_integration(hass, mock_api)
+
+    entity = None
+    for platform in async_get_platforms(hass, "plum_ecovent"):
+        entity = platform.entities.get(FILTER_INTERVAL) or entity
+    assert entity is not None
+
+    for value in (0.0, 1501.0):
+        with pytest.raises(HomeAssistantError, match="outside allowed range"):
+            await entity.async_set_native_value(value)
+    mock_api.async_set_param.assert_not_awaited()
+
+
+async def test_filter_interval_write_failure_surfaces(
+    hass,
+    mock_api: MagicMock,
+) -> None:
+    """Test newParam failures raise HomeAssistantError and keep state."""
+    mock_api.async_get_edit_params.return_value = _filter_edit_params()
+    mock_api.async_set_param = AsyncMock(
+        side_effect=PlumEconetConnectionError("Got 500")
+    )
+    await setup_integration(hass, mock_api)
+
+    with pytest.raises(
+        HomeAssistantError, match="Failed to set filter replacement interval"
+    ):
+        await hass.services.async_call(
+            "number",
+            "set_value",
+            {ATTR_ENTITY_ID: FILTER_INTERVAL, "value": 365},
+            blocking=True,
+        )
+
+    assert hass.states.get(FILTER_INTERVAL).state == "180.0"

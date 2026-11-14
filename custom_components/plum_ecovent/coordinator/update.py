@@ -126,6 +126,15 @@ class PlumEconetCoordinator(DataUpdateCoordinator[PlumEconetData]):
         )
 
     @property
+    def filter_time_to_alarm(self) -> EditableNumberStatus:
+        """Return the latest validated filter replacement interval (days)."""
+        return (
+            self.data.filter_time_to_alarm
+            if self.data is not None
+            else (EditableNumberStatus.invalid())
+        )
+
+    @property
     def winter_active_temp(self) -> EditableNumberStatus:
         """Return the latest validated winter activation temperature."""
         return (
