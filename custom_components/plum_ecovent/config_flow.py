@@ -46,9 +46,7 @@ class PlumEconetConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 data[CONF_HOST],
                 data[CONF_USERNAME],
                 data[CONF_PASSWORD],
-                allow_insecure_http=bool(
-                    data.get(CONF_ALLOW_INSECURE_HTTP, False)
-                ),
+                allow_insecure_http=bool(data.get(CONF_ALLOW_INSECURE_HTTP, False)),
             )
             return await api.async_get_sys_params(), None
         except PlumEconetInsecureHttpError:
@@ -95,9 +93,7 @@ class PlumEconetConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors=errors,
         )
 
-    async def async_step_reauth(
-        self, entry_data: Mapping[str, Any]
-    ) -> FlowResult:
+    async def async_step_reauth(self, entry_data: Mapping[str, Any]) -> FlowResult:
         """Start reauthentication for an existing config entry."""
         self._reauth_data = dict(entry_data)
         return await self.async_step_reauth_confirm()

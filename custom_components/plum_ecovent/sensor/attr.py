@@ -28,7 +28,9 @@ class PlumEconetAttrNumericSensor(PlumEconetCoordinatorEntity, SensorEntity):
     def _parsed_value(self) -> float | None:
         """Return a finite float from the snapshot attribute, or None."""
         snapshot = getattr(self.coordinator, self._coordinator_snapshot_attr)
-        return parse_finite_number(getattr(snapshot, self.entity_description.value_attr))
+        return parse_finite_number(
+            getattr(snapshot, self.entity_description.value_attr)
+        )
 
     @property
     @override

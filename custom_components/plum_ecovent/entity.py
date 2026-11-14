@@ -28,9 +28,9 @@ class PlumEconetCoordinatorEntity(CoordinatorEntity[PlumEconetCoordinator]):
         uid = str(coordinator.sys_params["uid"])
         self._attr_unique_id = f"{uid}_{description.key}"
         model = coordinator.sys_params.get("controllerID") or DEFAULT_MODEL
-        sw_version = coordinator.sys_params.get("softVer") or coordinator.sys_params.get(
-            "moduleASoftVer"
-        )
+        sw_version = coordinator.sys_params.get(
+            "softVer"
+        ) or coordinator.sys_params.get("moduleASoftVer")
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, uid)},
             manufacturer=MANUFACTURER,

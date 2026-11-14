@@ -53,9 +53,7 @@ async def test_select_keeps_pending_while_refresh_is_stale(
     assert state.attributes.get(ATTR_ASSUMED_STATE) is True
     assert state.attributes.get(ATTR_PENDING_WRITE) is True
     assert ATTR_PENDING_UNTIL in state.attributes
-    mock_api.async_set_param.assert_awaited_once_with(
-        "17", OperationMode.MODE_1.value
-    )
+    mock_api.async_set_param.assert_awaited_once_with("17", OperationMode.MODE_1.value)
     # Immediate post-write refresh still ran (stale overlay, not delayed refresh).
     assert mock_api.async_get_reg_params.await_count >= 2
 
@@ -122,7 +120,9 @@ async def test_select_pending_times_out_to_device_value(
         )
         await hass.async_block_till_done()
         assert hass.states.get(OPERATION_MODE).state == OperationMode.MODE_2.option
-        assert hass.states.get(OPERATION_MODE).attributes.get(ATTR_PENDING_WRITE) is True
+        assert (
+            hass.states.get(OPERATION_MODE).attributes.get(ATTR_PENDING_WRITE) is True
+        )
 
         frozen.tick(timedelta(seconds=PENDING_WRITE_TIMEOUT + 1))
         await entry.runtime_data.async_refresh()

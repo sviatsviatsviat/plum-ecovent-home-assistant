@@ -156,7 +156,9 @@ async def test_work_status_sensors_report_diagnostic_values(
 
     registry = er.async_get(hass)
     for entity_id in WORK_STATUS_ENTITIES:
-        assert registry.async_get(entity_id).entity_category == EntityCategory.DIAGNOSTIC
+        assert (
+            registry.async_get(entity_id).entity_category == EntityCategory.DIAGNOSTIC
+        )
 
 
 async def test_work_status_sensors_track_edit_params_refresh(

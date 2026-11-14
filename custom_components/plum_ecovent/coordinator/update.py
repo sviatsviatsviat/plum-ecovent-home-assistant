@@ -92,50 +92,64 @@ class PlumEconetCoordinator(DataUpdateCoordinator[PlumEconetData]):
     @property
     def work_status(self) -> WorkStatus:
         """Return the latest validated work status."""
-        return self.data.work_status if self.data is not None else WorkStatus(
-            None, None, None, None, None
+        return (
+            self.data.work_status
+            if self.data is not None
+            else WorkStatus(None, None, None, None, None)
         )
 
     @property
     def operation_mode(self) -> OperationModeStatus:
         """Return the latest validated operation mode."""
-        return self.data.operation_mode if self.data is not None else (
-            OperationModeStatus.invalid(OperationMode)
+        return (
+            self.data.operation_mode
+            if self.data is not None
+            else (OperationModeStatus.invalid(OperationMode))
         )
 
     @property
     def additional_work_mode(self) -> AdditionalWorkModeStatus:
         """Return the latest validated additional work mode."""
-        return self.data.additional_work_mode if self.data is not None else (
-            AdditionalWorkModeStatus.invalid(AdditionalWorkMode)
+        return (
+            self.data.additional_work_mode
+            if self.data is not None
+            else (AdditionalWorkModeStatus.invalid(AdditionalWorkMode))
         )
 
     @property
     def summer_winter_mode(self) -> SummerWinterModeStatus:
         """Return the latest validated summer / winter mode."""
-        return self.data.summer_winter_mode if self.data is not None else (
-            SummerWinterModeStatus.invalid(SummerWinterMode)
+        return (
+            self.data.summer_winter_mode
+            if self.data is not None
+            else (SummerWinterModeStatus.invalid(SummerWinterMode))
         )
 
     @property
     def winter_active_temp(self) -> EditableNumberStatus:
         """Return the latest validated winter activation temperature."""
-        return self.data.winter_active_temp if self.data is not None else (
-            EditableNumberStatus.invalid()
+        return (
+            self.data.winter_active_temp
+            if self.data is not None
+            else (EditableNumberStatus.invalid())
         )
 
     @property
     def summer_hysteresis(self) -> EditableNumberStatus:
         """Return the latest validated summer hysteresis."""
-        return self.data.summer_hysteresis if self.data is not None else (
-            EditableNumberStatus.invalid()
+        return (
+            self.data.summer_hysteresis
+            if self.data is not None
+            else (EditableNumberStatus.invalid())
         )
 
     @property
     def bypass_mode(self) -> BypassModeStatus:
         """Return the latest validated bypass mode."""
-        return self.data.bypass_mode if self.data is not None else (
-            BypassModeStatus.invalid(BypassMode)
+        return (
+            self.data.bypass_mode
+            if self.data is not None
+            else (BypassModeStatus.invalid(BypassMode))
         )
 
     def number_status(self, param_name: str) -> NumberParamStatus:
@@ -206,7 +220,7 @@ class PlumEconetCoordinator(DataUpdateCoordinator[PlumEconetData]):
             reg_refresh = sys_params.get("regRefresh", DEFAULT_REG_REFRESH)
             try:
                 seconds = int(reg_refresh)
-            except (TypeError, ValueError):
+            except TypeError, ValueError:
                 seconds = DEFAULT_REG_REFRESH
             self.update_interval = timedelta(seconds=max(seconds, 1))
 

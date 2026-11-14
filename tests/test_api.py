@@ -150,7 +150,9 @@ async def test_rejects_cleartext_http_redirect() -> None:
     )
     api = _api(session)
 
-    with pytest.raises(PlumEconetConnectionError, match="Refusing cleartext HTTP redirect"):
+    with pytest.raises(
+        PlumEconetConnectionError, match="Refusing cleartext HTTP redirect"
+    ):
         await api.async_get_sys_params()
 
     session.get.assert_called_once()
@@ -168,7 +170,9 @@ async def test_set_param_rejects_cleartext_http_redirect() -> None:
     )
     api = _api(session, "http://192.0.2.10")
 
-    with pytest.raises(PlumEconetConnectionError, match="Refusing cleartext HTTP redirect"):
+    with pytest.raises(
+        PlumEconetConnectionError, match="Refusing cleartext HTTP redirect"
+    ):
         await api.async_set_param("17", 3)
 
     session.get.assert_called_once()
