@@ -255,8 +255,11 @@ Summer / winter mode select. `edit: true`. Present only in `editParams.data` (no
 | `1` | Summer |
 | `2` | Winter |
 | `5` | Auto |
+| `6` | Auto (read-only; reported once Auto resolved to Winter recuperation) |
 | `8` | Ventilation |
 | other | Unknown |
+
+`6` cannot be written; the integration displays it as Auto and always writes Auto as `5`, letting the module resolve the season.
 
 #### Related setpoints
 
