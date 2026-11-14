@@ -167,7 +167,7 @@ Halt + Mode 1–4. `edit: true`, in `curr`. Write: `/econet/newParam?newParamNam
 | `5` | Mode 3 |
 | `6` | Halt |
 | `7` | Mode 4 |
-| other | Unknown |
+| other | Unsupported (read-only in the integration) |
 
 #### Related User Mode parameters
 
@@ -200,7 +200,7 @@ Off / Outside / Party / Airing. `edit: true`, in `curr`. Write: `/econet/newPara
 | `1` | Outside |
 | `2` | Party |
 | `4` | Airing |
-| other | Unknown |
+| other | Unsupported (read-only in the integration) |
 
 From Halt, Outside / Party / Airing leaves Halt and runs Mode 1 in one `REKWS4` write (no separate `REKWS1` write for that transition).
 
@@ -257,7 +257,7 @@ Summer / winter mode select. `edit: true`. Present only in `editParams.data` (no
 | `5` | Auto |
 | `6` | Auto (read-only; reported once Auto resolved to Winter recuperation) |
 | `8` | Ventilation |
-| other | Unknown |
+| other | Unsupported (read-only in the integration) |
 
 `6` cannot be written; the integration displays it as Auto and always writes Auto as `5`, letting the module resolve the season.
 
@@ -285,7 +285,7 @@ Values are large integers (packed bitfield: base `257` OR mode flag — Close `+
 | `289` | Auto |
 | `273` | Open |
 | `265` | Close |
-| other | Unknown |
+| other | Unsupported (read-only in the integration) |
 
 #### `BYPmodState` — Bypass / Rotor motor state (id 235)
 
@@ -295,7 +295,7 @@ Bypass / Rotor motor state. Live state (not a user setting) despite `edit: true`
 | --- | --- |
 | `0` | Off |
 | `1` | On |
-| other | Unknown |
+| other | Unsupported (read-only in the integration) |
 
 #### `BYPcurControl` — bypass open level (id 343)
 
@@ -319,7 +319,7 @@ econet24 **Current work status** panel (separate from the Summer / winter mode s
 | --- | --- |
 | `0` | Heating |
 | `1` | Cooling |
-| other | Unknown |
+| other | Unsupported (read-only in the integration) |
 
 Heating when comfort setpoint is above leading temperature; Cooling when below. Slot `131` matched `103` in every dump; treat `103` as canonical.
 
@@ -331,9 +331,9 @@ Status row for season / ventilation. This is **not** the writable `REKWS2` setti
 | --- | --- | --- |
 | `0` | Summer | With `REKWS2=1` |
 | `1` | Winter | With `REKWS2=2` |
-| `2` | Auto — Summer | With `REKWS2=5` while status showed Summer |
-| `3` | Auto — Winter | **Assumption** (symmetric to `2`; not yet observed) |
+| `2` | Auto — Summer | With `REKWS2=5` |
+| `3` | Auto — Winter | With `REKWS2=6` (Auto resolved to Winter) |
 | `4` | Ventilation | With `REKWS2=8` |
-| other | Unknown | |
+| other | Unsupported (read-only in the integration) | |
 
-When `REKWS2` is Auto (`5`), slot `105` is the resolved season (`2` / assumed `3`). Forced Summer / Winter / Ventilation map to `0` / `1` / `4`. Slot `91` tracks bypass only (`"0"` when `BYPmodState` On, `"1"` when Off).
+When `REKWS2` is Auto (`5`, or `6` once resolved to Winter), slot `105` is the resolved season (`2` / `3`). Forced Summer / Winter / Ventilation map to `0` / `1` / `4`. Slot `91` tracks bypass only (`"0"` when `BYPmodState` On, `"1"` when Off).

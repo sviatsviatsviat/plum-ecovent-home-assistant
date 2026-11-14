@@ -57,7 +57,7 @@ class SeasonStatus(WireMappedIntEnum):
     SUMMER = 0
     WINTER = 1
     AUTO_SUMMER = 2
-    AUTO_WINTER = 3  # Documented assumption; not yet observed live.
+    AUTO_WINTER = 3
     VENTILATION = 4
 
 
