@@ -61,7 +61,7 @@ Unexpected mode values appear as read-only Unsupported.
 - Summer / winter mode — Summer, Winter, Auto, Ventilation
 - Bypass mode — Auto, Open, Close
 - Summer mode hysteresis (°C) and Winter mode turn-on temperature (°C)
-- Filter replacement interval (days, 1–1500) — when the filter alert triggers; days to alert follow it
+- Filter replacement interval (days; range reported by the module, 1–1500 if not reported) — when the filter alert triggers; days to alert follow it
 - Party supply/exhaust fan speed (%), duration (hours), and target temperature (°C); Outside duration (hours); Airing exhaust fan speed (%) and duration (minutes)
 - Mode 1–4 supply and exhaust fan velocities (%)
 - Mode 1–4 target temperatures (°C)
