@@ -21,6 +21,10 @@ updates:
         patterns:
           - homeassistant
           - pytest-homeassistant-custom-component
+      dev-tools:
+        patterns:
+          - ruff
+          - debugpy
 
   - package-ecosystem: devcontainers
     directory: /
