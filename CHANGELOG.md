@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The
 
 ## [Unreleased]
 
+### Fixed
+
+- Summer/winter mode shows Auto instead of Unsupported when the module has switched Auto to winter recuperation; selecting Auto still sets plain Auto.
+
 ## [1.0.0] - 2026-08-09
 
 ### Added

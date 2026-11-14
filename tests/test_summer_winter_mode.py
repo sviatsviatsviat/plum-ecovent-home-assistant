@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from copy import deepcopy
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock
@@ -38,7 +39,8 @@ WIRE_CASES = (
     (0, OPTION_UNSUPPORTED),
     (3, OPTION_UNSUPPORTED),
     (4, OPTION_UNSUPPORTED),
-    (6, OPTION_UNSUPPORTED),
+    (6, SummerWinterMode.AUTO.option),
+    (7, OPTION_UNSUPPORTED),
 )
 
 
@@ -51,6 +53,9 @@ def test_summer_winter_mode_enum_wires() -> None:
     assert SummerWinterMode.AUTO.option == "auto"
     assert SummerWinterMode.from_wire(2) is SummerWinterMode.WINTER
     assert SummerWinterMode.from_wire(0) is None
+    assert SummerWinterMode.from_wire(6) is SummerWinterMode.AUTO
+    assert SummerWinterMode.AUTO.value == 5
+    assert list(SummerWinterMode) == list(SUMMER_WINTER_MODES)
     assert SummerWinterMode.from_option("ventilation") is SummerWinterMode.VENTILATION
     assert [mode.option for mode in SUMMER_WINTER_MODES] == [
         "summer",
@@ -281,6 +286,93 @@ async def test_summer_winter_mode_write_all_writable_options(
     )
 
     mock_api.async_set_param.assert_awaited_once_with("18", mode.value)
+
+
+async def test_summer_winter_mode_auto_winter_writes_auto(
+    hass: HomeAssistant,
+    mock_api: MagicMock,
+    edit_params: dict[str, Any],
+) -> None:
+    """Test Auto resolved to Winter (wire 6) shows Auto and writes Auto as 5."""
+    edit_params = deepcopy(edit_params)
+    edit_params["data"]["18"]["value"] = 6
+    mock_api.async_get_edit_params.return_value = edit_params
+    await setup_integration(hass, mock_api)
+
+    state = hass.states.get(SUMMER_WINTER_MODE)
+    assert state.state == SummerWinterMode.AUTO.option
+    assert OPTION_UNSUPPORTED not in state.attributes["options"]
+
+    await hass.services.async_call(
+        "select",
+        "select_option",
+        {
+            ATTR_ENTITY_ID: SUMMER_WINTER_MODE,
+            ATTR_OPTION: SummerWinterMode.AUTO.option,
+        },
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+
+    mock_api.async_set_param.assert_awaited_once_with("18", 5)
+    assert hass.states.get(SUMMER_WINTER_MODE).state == SummerWinterMode.AUTO.option
+
+
+async def test_summer_winter_mode_auto_winter_does_not_warn(
+    hass: HomeAssistant,
+    mock_api: MagicMock,
+    edit_params: dict[str, Any],
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Test Auto-Winter (wire 6) is not logged as an unexpected wire value."""
+    edit_params = deepcopy(edit_params)
+    edit_params["data"]["18"]["value"] = 6
+    mock_api.async_get_edit_params.return_value = edit_params
+
+    with caplog.at_level(
+        logging.WARNING,
+        logger="custom_components.plum_ecovent.coordinator.update",
+    ):
+        entry = await setup_integration(hass, mock_api)
+        await entry.runtime_data.async_refresh()
+
+    assert not [
+        record
+        for record in caplog.records
+        if "Unexpected REKWS2 wire value" in record.getMessage()
+    ]
+
+
+async def test_summer_winter_mode_write_auto_confirmed_by_auto_winter(
+    hass: HomeAssistant,
+    mock_api: MagicMock,
+    edit_params: dict[str, Any],
+) -> None:
+    """Test writing Auto (5) is confirmed when the module reports Auto-Winter (6)."""
+    edit_params = deepcopy(edit_params)
+    edit_params["data"]["18"]["value"] = SummerWinterMode.SUMMER
+    mock_api.async_get_edit_params.return_value = edit_params
+    await setup_integration(hass, mock_api)
+
+    refreshed = deepcopy(edit_params)
+    refreshed["data"]["18"]["value"] = 6
+    mock_api.async_get_edit_params.return_value = refreshed
+
+    await hass.services.async_call(
+        "select",
+        "select_option",
+        {
+            ATTR_ENTITY_ID: SUMMER_WINTER_MODE,
+            ATTR_OPTION: SummerWinterMode.AUTO.option,
+        },
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+
+    mock_api.async_set_param.assert_awaited_once_with("18", 5)
+    state = hass.states.get(SUMMER_WINTER_MODE)
+    assert state.state == SummerWinterMode.AUTO.option
+    assert OPTION_UNSUPPORTED not in state.attributes["options"]
 
 
 async def test_summer_winter_mode_write_failure_surfaces(

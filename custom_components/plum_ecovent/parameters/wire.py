@@ -18,7 +18,7 @@ class WireMappedIntEnum(IntEnum):
 
     @classmethod
     def from_wire(cls, wire: int) -> Self | None:
-        """Return the member for a wire value, or None if not writable."""
+        """Return the member a wire value displays as, or None if unrecognised."""
         try:
             return cls(wire)
         except ValueError:

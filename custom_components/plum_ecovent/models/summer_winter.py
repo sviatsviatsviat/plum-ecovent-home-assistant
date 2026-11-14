@@ -54,6 +54,12 @@ class SummerWinterMode(WireMappedIntEnum):
     VENTILATION = 8
 
 
+# Read-only alias: the module reports Auto as 6 once it has resolved Auto to
+# Winter recuperation, but does not accept 6 on write. The alias resolves 6 to
+# AUTO while AUTO.value stays 5, so writing Auto always sends 5.
+SummerWinterMode.AUTO._add_value_alias_(6)
+
+
 # Select option order matches the ecoVENT UI listing.
 SUMMER_WINTER_MODES: tuple[SummerWinterMode, ...] = (
     SummerWinterMode.SUMMER,
